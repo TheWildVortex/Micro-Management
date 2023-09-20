@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class Stage3 : MonoBehaviour
 {
@@ -173,6 +174,14 @@ public class Stage3 : MonoBehaviour
     // Update text function
     private void UpdateText()
     {
+        var customers = Global.CustomersData;
+
+        // Data update
+        loansRemain = customers.Count(customer => !customer.Paid);
+        loansClosed = customers.Count(customer => customer.Paid);
+
+
+        // Text update
         loansRemainText.text = "Loans Remaining: " + loansRemain.ToString();
         loansClosedText.text = "Loans Closed: " + loansClosed.ToString();
         loansDroppedText.text = "Loans Dropped: " + loansDropped.ToString();

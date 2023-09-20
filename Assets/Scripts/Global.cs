@@ -324,6 +324,7 @@ public class Global : MonoBehaviour
         public string HomeAddress { get; set; }
         public string ContactInfo { get; set; }
         public bool Approved { get; set; }
+        public bool Paid { get; set; }
 
         // Appearance
         public int Clothes { get; set; }
@@ -344,8 +345,8 @@ public class Global : MonoBehaviour
         // Probabilities
         public bool Real { get; set; }
         public bool Valid { get; set; }
-        public int Rate { get; set; }
-        public int Frequency { get; set; }
+        public float Rate { get; set; }
+        public float Frequency { get; set; }
         public float StopChance { get; set; }
     }
 
@@ -464,6 +465,7 @@ public class Global : MonoBehaviour
             customer.HomeAddress = homeAddresses[UnityEngine.Random.Range(0, homeAddresses.Length)];
             customer.ContactInfo = RandomNumberGenerator.GenerateRandomPhoneNumber(10);
             customer.Approved = false;
+            customer.Paid = false;
 
             // Generate customer appearance
             customer.Clothes = UnityEngine.Random.Range(0, 5);

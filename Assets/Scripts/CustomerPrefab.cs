@@ -5,6 +5,7 @@ using UnityEngine;
 public class CustomerPrefab : MonoBehaviour
 {
     // Sprite Objects
+    private int sortNumber;
     SpriteRenderer eyes;
     SpriteRenderer nose;
     SpriteRenderer mouth;
@@ -78,6 +79,7 @@ public class CustomerPrefab : MonoBehaviour
     // Awake Function
     private void Awake()
     {
+        sortNumber = GetComponent<Canvas>().sortingOrder;
         eyes = transform.Find("eyes").GetComponent<SpriteRenderer>();
         nose = transform.Find("nose").GetComponent<SpriteRenderer>();
         mouth = transform.Find("mouth").GetComponent<SpriteRenderer>();
@@ -89,12 +91,11 @@ public class CustomerPrefab : MonoBehaviour
         body = transform.Find("body").GetComponent<SpriteRenderer>();
     }
 
-    // Update function to maintain sorting order
+    // Maintain correct sorting order
     private void Update()
     {
-        extension.sortingOrder = eyes.sortingOrder - 1;
-        clothes.sortingOrder = eyes.sortingOrder - 1;
-        body.sortingOrder = eyes.sortingOrder - 2;
+        eyes.sortingOrder = nose.sortingOrder = mouth.sortingOrder = brows.sortingOrder = bangs.sortingOrder = hair.sortingOrder = clothes.sortingOrder = sortNumber + 1;
+        body.sortingOrder = extension.sortingOrder = sortNumber;
     }
 
     // Generate Sprite based on customer information
