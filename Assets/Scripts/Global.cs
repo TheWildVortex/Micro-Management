@@ -9,6 +9,24 @@ public class Global : MonoBehaviour
     // GLOBAL STATES:
     private static bool isGamePaused = false;
 
+    // GLOBAL MULTIPLIERS
+    public static float amountEarnedMultiplier = 0.1f;
+    public static float demandLetterMultiplier = 0.3f;
+    public static float droppedMultiplier = 0.5f;
+
+    // GLOBAL BASE PROBABILITIES
+    public static float minPaymentRate = 0.01f;
+    public static float minFrequency = 0.01f;
+    public static float minStopChance = 0f;
+
+    public static float basePaymentRate = 0.1f;
+    public static float baseFrequency = 0.5f;
+    public static float baseStopChance = 0.05f;
+
+    public static float maxPaymentRate = 0.2f;
+    public static float maxFrequency = 1.0f;
+    public static float maxStopChance = 1.0f;
+
     // GLOBAL DATA:
     // Names
     private static string[] firstNames = { "John", "Jane", "Michael", "Emily", "David", "Sarah" };
@@ -298,12 +316,12 @@ public class Global : MonoBehaviour
     {
         // Basic Information
         public string MfiName { get; set; }
-        public int Budget { get; set; }
+        public float Budget { get; set; }
 
         // Gameplay Statistics
         public int TotalLoansCompleted { get; set; }
-        public int TotalAmountEarned { get; set; }
         public int TotalLevelsCompleted { get; set; }
+        public float TotalAmountEarned { get; set; }
     }
 
     // Customer Class
@@ -316,8 +334,8 @@ public class Global : MonoBehaviour
         public int Age { get; set; }
 
         // Loan Details
-        public int LoanAmount { get; set; }
-        public int AmountEarned { get; set; }
+        public float LoanAmount { get; set; }
+        public float AmountEarned { get; set; }
         public string Business { get; set; }
         public Identification IDUsed { get; set; }
         public string BusAddress { get; set; }
@@ -325,6 +343,9 @@ public class Global : MonoBehaviour
         public string ContactInfo { get; set; }
         public bool Approved { get; set; }
         public bool Paid { get; set; }
+        public bool Demanded { get; set; }
+        public bool Active { get; set; }
+        public bool Dropped { get; set; }
 
         // Appearance
         public int Clothes { get; set; }
@@ -457,7 +478,7 @@ public class Global : MonoBehaviour
             customer.Age = Calculator.CalculateAge(customer.Bday, today);
 
             // Generate Loan Details
-            customer.LoanAmount = UnityEngine.Random.Range(minLoan, maxLoan);
+            customer.LoanAmount = Mathf.Round(UnityEngine.Random.Range(minLoan, maxLoan) / 1000f) * 1000;
             customer.AmountEarned = customer.LoanAmount;
             customer.Business = businesses[UnityEngine.Random.Range(0, businesses.Length)];
             customer.IDUsed = NewID();
@@ -466,6 +487,9 @@ public class Global : MonoBehaviour
             customer.ContactInfo = RandomNumberGenerator.GenerateRandomPhoneNumber(10);
             customer.Approved = false;
             customer.Paid = false;
+            customer.Demanded = false;
+            customer.Active = true;
+            customer.Dropped = false;
 
             // Generate customer appearance
             customer.Clothes = UnityEngine.Random.Range(0, 5);
@@ -506,14 +530,16 @@ public class Global : MonoBehaviour
                 customer.Mouth = oldMouths[UnityEngine.Random.Range(0, oldMouths.Length)];
             }
 
-            // Generate Probabilities
-            customer.Real = UnityEngine.Random.value < chanceForReal;
-            customer.Valid = UnityEngine.Random.value < chanceForValid;
-            customer.Rate = UnityEngine.Random.Range(1, 3); // Fast[1], Slow[2], Erratic[3]
-            customer.Frequency = UnityEngine.Random.Range(1, 3); // Early[1], Late[2], Steady[3]
-            customer.StopChance = 0f;
+            // Generate Base Probabilities
+            customer.Real = UnityEngine.Random.value < chanceForReal; // Higher Real chance = easier
+            customer.Valid = UnityEngine.Random.value < chanceForValid; // Higher Valid chance = easier
+            customer.Rate = basePaymentRate; // What % of the total loan amount will be paid per day
+            customer.Frequency = baseFrequency; // % chance that a payment will be made that day
+            customer.StopChance = baseStopChance; // % chance that payments will stop entirely
+            Debug.Log("Chance for Real: " + customer.Real.ToString());
+            Debug.Log("Chance for Valid: " + customer.Valid.ToString());
 
-            //Generate Common ID details
+            //Generate Base Common ID details
             customer.IDUsed.IDFirstName = customer.FirstName;
             customer.IDUsed.IDLastName = customer.LastName;
             customer.IDUsed.IDNationality = "Filipino";
@@ -530,6 +556,14 @@ public class Global : MonoBehaviour
             // Effects of Valid/Invalid
             if (customer.Valid)
             {
+                // Adjust probabilities based on Valid chance
+                if (UnityEngine.Random.value < chanceForValid) { customer.Rate = UnityEngine.Random.Range(basePaymentRate, maxPaymentRate); }
+                else { customer.Rate = UnityEngine.Random.Range(minPaymentRate, basePaymentRate); }
+
+                if (UnityEngine.Random.value < chanceForValid) { customer.Frequency = UnityEngine.Random.Range(baseFrequency, maxFrequency); }
+                else { customer.Frequency = UnityEngine.Random.Range(minFrequency, baseFrequency); }
+
+                // Keep Valid ID details
                 // Create Valid ID
                 customer.IDUsed.IDTypeNumber = idTypesValid[UnityEngine.Random.Range(0, idTypesValid.Length)];
 
@@ -542,7 +576,7 @@ public class Global : MonoBehaviour
                     customer.IDUsed.IDTypeNumber = idTypesValid[UnityEngine.Random.Range(0, idTypesValid.Length)];
                 }
 
-                // Create Valid ID Details based on type
+                // Create Specific Valid ID Details based on type
                 switch (customer.IDUsed.IDTypeNumber)
                 {
                     // Driver's License Details
@@ -603,7 +637,14 @@ public class Global : MonoBehaviour
 
             else
             {
-                customer.StopChance = 0.1f;
+                // Adjust probabilities based on Invalid chance
+                if (UnityEngine.Random.value > chanceForValid) { customer.Rate = UnityEngine.Random.Range(basePaymentRate, maxPaymentRate); }
+                else { customer.Rate = UnityEngine.Random.Range(minPaymentRate, basePaymentRate); }
+
+                if (UnityEngine.Random.value > chanceForValid) { customer.Frequency = UnityEngine.Random.Range(baseFrequency, maxFrequency); }
+                else { customer.Frequency = UnityEngine.Random.Range(minFrequency, baseFrequency); }
+
+                // Edit in Common Invalid ID details based on chance
 
                 // Create Invalid ID
                 customer.IDUsed.IDTypeNumber = idTypesInvalid[UnityEngine.Random.Range(0, idTypesInvalid.Length)];
@@ -611,6 +652,7 @@ public class Global : MonoBehaviour
                 // Adjust for testing: 0 - "Driver's License", 1 - "Senior Citizen ID", 2 - "National ID", 3 - "Barangay ID", 4 - "Passport", 5 - "Elementary ID", 6 - "High School ID" 
                 //customer.IDUsed.IDTypeNumber = 0;
 
+                // Edit in Specific Invalid ID details based on chance
                 switch (customer.IDUsed.IDTypeNumber)
                 {
                     // Driver's License Details
@@ -719,8 +761,11 @@ public class Global : MonoBehaviour
             // Effects of Real/Fake
             if (customer.Real)
             {
-                // Implement Real ID Details
+                // Adjust probability based on Real chance
+                if (UnityEngine.Random.value < chanceForReal) { customer.StopChance = UnityEngine.Random.Range(minStopChance, baseStopChance); }
+                else { customer.StopChance = UnityEngine.Random.Range(baseStopChance, maxStopChance); }
 
+                // Keep Real ID Details
                 // Set ID picture to the same values as the real customer
                 customer.IDUsed.IDClothes = customer.Clothes;
                 customer.IDUsed.IDClothesColor = customer.ClothesColor;
@@ -739,8 +784,142 @@ public class Global : MonoBehaviour
 
             else
             {
-                customer.StopChance = 0.5f;
-                // Implement Fake ID Details
+                // Adjust probability based on Fake chance
+                if (UnityEngine.Random.value > chanceForReal) { customer.StopChance = UnityEngine.Random.Range(minStopChance, baseStopChance); }
+                else { customer.StopChance = UnityEngine.Random.Range(baseStopChance, maxStopChance); }
+
+                // Edit in Fake ID Details based on Real chance
+                customer.IDUsed.IDFirstName = customer.FirstName;
+                customer.IDUsed.IDLastName = customer.LastName;
+                customer.IDUsed.IDNationality = "Filipino";
+                customer.IDUsed.IDSex = customer.Sex;
+                customer.IDUsed.IDCivilStatus = idCivilStatus[UnityEngine.Random.Range(0, idCivilStatus.Length)];
+                customer.IDUsed.IDAddress = customer.HomeAddress;
+                customer.IDUsed.IDBirthPlace = idBirthPlace[UnityEngine.Random.Range(0, idBirthPlace.Length)];
+                customer.IDUsed.IDBday = customer.Bday;
+                customer.IDUsed.IDAge = customer.Age;
+                customer.IDUsed.IDIssueDate = RandomDateGenerator.GenerateRandomDate(today.AddYears(-1), today.AddYears(-4));
+                customer.IDUsed.IDExpireDate = customer.IDUsed.IDIssueDate.AddYears(5);
+                customer.IDUsed.IDContactNumber = customer.ContactInfo;
+
+                // Edit in Specific Fake ID details based on Real chance
+                switch (customer.IDUsed.IDTypeNumber)
+                {
+                    // Driver's License Details
+                    case 0:
+                        customer.IDUsed.IDType = "Driver's License";
+                        customer.IDUsed.IDNumber = RandomNumberGenerator.GenerateRandomLicenseNumber();
+                        customer.IDUsed.Weight = Calculator.CalculateWeight(customer.IDUsed.IDAge, customer.IDUsed.IDSex);
+                        customer.IDUsed.Height = Calculator.CalculateHeight(customer.IDUsed.IDAge, customer.IDUsed.IDSex);
+                        customer.IDUsed.BloodType = idBloodTypes[UnityEngine.Random.Range(0, idBloodTypes.Length)];
+                        customer.IDUsed.Restriction = UnityEngine.Random.Range(1, 9);
+                        customer.IDUsed.Conditions = "NONE";
+                        break;
+
+                    // Senior ID Details
+                    case 1:
+                        // Ensure that the customer is actually a Senior
+                        customer.IDUsed.IDBday = RandomDateGenerator.GenerateRandomDate(today.AddYears(-80), today.AddYears(-60));
+                        customer.IDUsed.IDAge = Calculator.CalculateAge(customer.IDUsed.IDBday, today);
+
+                        // Complete the rest of the details
+                        customer.IDUsed.IDType = "Senior Citizen ID";
+                        customer.IDUsed.IDNumber = UnityEngine.Random.Range(1000, 9999).ToString();
+                        var emergencyName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)];
+                        var emergencyNumber = RandomNumberGenerator.GenerateRandomPhoneNumber(10);
+                        // Ensure that the emergency contact name and emergency contact number are different
+                        while (customer.FirstName == emergencyName)
+                        {
+                            emergencyName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)];
+                        }
+                        while (customer.ContactInfo == emergencyNumber)
+                        {
+                            emergencyNumber = RandomNumberGenerator.GenerateRandomPhoneNumber(10);
+                        }
+                        customer.IDUsed.EmergencyContactName = emergencyName + " " + customer.LastName;
+                        customer.IDUsed.EmergencyContactNumber = emergencyNumber;
+                        break;
+
+                    // National ID Details
+                    case 2:
+                        customer.IDUsed.IDType = "National ID";
+                        customer.IDUsed.IDNumber = RandomNumberGenerator.GenerateRandomNationalIDNumber();
+                        break;
+
+                    // Barangay ID Details
+                    case 3:
+                        customer.IDUsed.IDType = "Barangay ID";
+                        customer.IDUsed.IDNumber = RandomNumberGenerator.GenerateRandomBarangayIDNumber();
+                        customer.IDUsed.Barangay = idBarangays[UnityEngine.Random.Range(0, idBarangays.Length)];
+                        customer.IDUsed.PrecinctNumber = RandomNumberGenerator.GenerateRandomPrecinctNumber();
+                        break;
+
+                    // Passport Details
+                    case 4:
+                        customer.IDUsed.IDType = "Passport";
+                        customer.IDUsed.IDNumber = RandomNumberGenerator.GenerateRandomPassportNumber();
+                        customer.IDUsed.PassportType = "P";
+                        customer.IDUsed.CountryCode = "PHL";
+                        break;
+
+                    // Elementary ID Details
+                    case 5:
+                        customer.IDUsed.IDType = "Elementary School ID";
+                        customer.IDUsed.IDNumber = RandomNumberGenerator.GenerateRandomNumber(4).ToString();
+                        customer.IDUsed.SchoolName = idElemSchools[UnityEngine.Random.Range(0, idElemSchools.Length)];
+                        customer.IDUsed.SchoolCity = idSchoolCities[UnityEngine.Random.Range(0, idSchoolCities.Length)];
+                        customer.IDUsed.SchoolGrade = UnityEngine.Random.Range(1, 6);
+                        customer.IDUsed.SchoolSection = RandomNumberGenerator.GenerateSection(customer.IDUsed.SchoolGrade);
+                        // Ensure that the adviser's name is different
+                        var elemAdviserName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)] + " " + lastNames[UnityEngine.Random.Range(0, lastNames.Length)];
+                        while (customer.FirstName + " " + customer.LastName == elemAdviserName)
+                        {
+                            elemAdviserName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)] + " " + lastNames[UnityEngine.Random.Range(0, lastNames.Length)];
+                        }
+                        customer.IDUsed.SchoolAdviser = elemAdviserName;
+                        customer.IDUsed.SchoolYear = RandomNumberGenerator.GenerateSchoolYear(today.Year, customer.IDUsed.SchoolGrade, customer.IDUsed.IDAge);
+                        break;
+
+                    // High School ID Details
+                    case 6:
+                        customer.IDUsed.IDType = "High School ID";
+                        customer.IDUsed.IDNumber = RandomNumberGenerator.GenerateRandomNumber(4).ToString();
+                        customer.IDUsed.SchoolName = idHighSchools[UnityEngine.Random.Range(0, idHighSchools.Length)];
+                        customer.IDUsed.SchoolCity = idSchoolCities[UnityEngine.Random.Range(0, idSchoolCities.Length)];
+                        customer.IDUsed.SchoolGrade = UnityEngine.Random.Range(7, 12);
+                        customer.IDUsed.SchoolSection = RandomNumberGenerator.GenerateSection(customer.IDUsed.SchoolGrade);
+                        // Ensure that the adviser's name is different
+                        var HSAdviserName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)] + " " + lastNames[UnityEngine.Random.Range(0, lastNames.Length)];
+                        while (customer.FirstName + " " + customer.LastName == HSAdviserName)
+                        {
+                            HSAdviserName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)] + " " + lastNames[UnityEngine.Random.Range(0, lastNames.Length)];
+                        }
+                        customer.IDUsed.SchoolAdviser = HSAdviserName;
+                        customer.IDUsed.SchoolYear = RandomNumberGenerator.GenerateSchoolYear(today.Year, customer.IDUsed.SchoolGrade, customer.IDUsed.IDAge);
+                        break;
+
+                    // Bank Slip Details
+                    case 7:
+                        customer.IDUsed.IDType = "Bank Slip";
+                        customer.IDUsed.BankBranch = idBankBranches[UnityEngine.Random.Range(0, idBankBranches.Length)];
+                        customer.IDUsed.DepositNumber = UnityEngine.Random.Range(100000000, 999999999);
+                        customer.IDUsed.DepositAmount = UnityEngine.Random.Range(10000, 100000); ;
+                        break;
+                }
+                // Set ID picture to different values based on Real chance
+                customer.IDUsed.IDClothes = customer.Clothes;
+                customer.IDUsed.IDClothesColor = customer.ClothesColor;
+                customer.IDUsed.IDSkinType = customer.SkinType;
+                customer.IDUsed.IDBodyColor = customer.BodyColor;
+                customer.IDUsed.IDEyeColor = customer.EyeColor;
+                customer.IDUsed.IDEyes = customer.Eyes;
+                customer.IDUsed.IDNose = customer.Nose;
+                customer.IDUsed.IDMouth = customer.Mouth;
+                customer.IDUsed.IDHairColor = customer.HairColor;
+                customer.IDUsed.IDBrows = customer.Brows;
+                customer.IDUsed.IDBangs = customer.Bangs;
+                customer.IDUsed.IDHair = customer.Hair;
+                customer.IDUsed.IDHairExtension = customer.HairExtension;
             }
 
             customers.Add(customer);

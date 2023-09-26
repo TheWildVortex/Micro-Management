@@ -69,8 +69,8 @@ public class IDPhotoPrefab : MonoBehaviour
         // Establish sorting order
         sortOrder = canvas.sortingOrder;
 
-        eyes.sortingOrder = nose.sortingOrder = mouth.sortingOrder = brows.sortingOrder = bangs.sortingOrder = hair.sortingOrder = clothes.sortingOrder = sortOrder + 2;
-        extension.sortingOrder = body.sortingOrder = sortOrder + 1;
+        eyes.sortingOrder = nose.sortingOrder = mouth.sortingOrder = brows.sortingOrder = bangs.sortingOrder = hair.sortingOrder = clothes.sortingOrder = sortOrder + 3;
+        extension.sortingOrder = body.sortingOrder = sortOrder + 2;
     }
 
     // Edit part of the ID Photo

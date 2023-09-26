@@ -7,8 +7,8 @@ using System.Linq;
 public class Stage1 : MonoBehaviour
 {
     // Stage 1 Variables
-    public static int currentBudget;
-    public static int totalLoanAmount;
+    public static float currentBudget;
+    public static float totalLoanAmount;
     public int totalLoanCount;
     public TMP_Text currentBudgetText;
     public TMP_Text totalLoanAmountText;

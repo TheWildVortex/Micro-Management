@@ -125,16 +125,24 @@ public class LoanAppPrefab : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
         {
             Debug.Log("Hit collider: " + hit.collider.gameObject.name);
 
+            // If dragged onto the passed panel
             if (hit.collider.gameObject.name == "PassPanel")
             {
                 loanAppCustomer.Approved = true;
                 Debug.Log(loanAppCustomer.Approved);
+                loanAppCustomer.AmountEarned = ApplyMultipliers(loanAppCustomer);
             }
         }
+
+        // If dragged outside passed panel
         else
         {
             loanAppCustomer.Approved = false;
             Debug.Log("FailPanel");
+
+            // Reset amount earned
+            loanAppCustomer.AmountEarned = loanAppCustomer.LoanAmount;
+            Debug.Log("Amount Earned: " + loanAppCustomer.AmountEarned.ToString("n2"));
         }
     }
 
@@ -156,5 +164,34 @@ public class LoanAppPrefab : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
             rectTransform.localScale = new Vector2(5.12f, 5.12f); 
             enlarged = false;
         }
+    }
+
+    private float ApplyMultipliers(Global.Customer customer)
+    {
+        // Adjust amount earned based on Real status
+        if (customer.Real)
+        {
+            customer.AmountEarned += customer.LoanAmount * Global.amountEarnedMultiplier;
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+        else
+        {
+            customer.AmountEarned -= customer.LoanAmount * (Global.amountEarnedMultiplier / 2);
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+
+        // Adjust amount earned based on Valid status
+        if (customer.Valid)
+        {
+            customer.AmountEarned += customer.LoanAmount * Global.amountEarnedMultiplier;
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+        else
+        {
+            customer.AmountEarned -= customer.LoanAmount * (Global.amountEarnedMultiplier / 2);
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+
+        return customer.AmountEarned;
     }
 }

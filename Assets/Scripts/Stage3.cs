@@ -8,18 +8,19 @@ using System.Linq;
 public class Stage3 : MonoBehaviour
 {
     // Stage 3 Variables
-    private int currentBudget;
+    private float currentBudget;
+    public static bool stageFinish = false;
 
     // HEADER ELEMENTS
     // CountDown Variables
-    private float currentTime;
+    public static float currentTime;
     public float countdownTime = 100;
     public TMP_Text countdownText;
     // Data Variables
-    private int loansRemain = 1;
-    private int loansClosed = 22;
-    private int loansDropped = 333;
-    private int demandLetters = 4444;
+    private int loansRemain = 0;
+    private int loansClosed = 0;
+    private int loansDropped = 0;
+    private int demandLetters = 0;
     public TMP_Text loansRemainText;
     public TMP_Text loansClosedText;
     public TMP_Text loansDroppedText;
@@ -36,14 +37,17 @@ public class Stage3 : MonoBehaviour
     public TMP_Text pauseButtonText;
     // Speed Button
     private float speedScale = 2f;
+    public Button speedButton;
     public static bool speedOn = false;
+    // Continue Button
+    public Button continueButton;
 
     // Start is called before the first frame update
     void Start()
     {
-        // -------------------------------------------------STAGE 2 TESTING----------------------------------------
+        // -------------------------------------------------STAGE 3 TESTING----------------------------------------
 
-        // Set variables:
+        /*// Set variables:
         string mfi = "Name";
         int testBudget = 50000;
         int number = 5;
@@ -60,13 +64,13 @@ public class Stage3 : MonoBehaviour
         Global.ResetGlobalData();
         // Store data in Global
         Global.PlayerData = player;
-        Global.CustomersData = customers;
+        Global.CustomersData = customers;*/
 
-        // -------------------------------------------------STAGE 2 TESTING----------------------------------------
+        // -------------------------------------------------STAGE 3 TESTING----------------------------------------
 
         // Retrieve Global player and customers data
-        //var player = Global.PlayerData;
-        //var customers = Global.CustomersData;
+        var player = Global.PlayerData;
+        var customers = Global.CustomersData;
 
         // Set status values
         currentBudget = player.Budget;
@@ -99,6 +103,12 @@ public class Stage3 : MonoBehaviour
         else
         {
             SpeedDown();
+        }
+
+        // Once the stage is complete
+        if (stageFinish)
+        {
+            CompleteStage();
         }
     }
 
@@ -153,8 +163,11 @@ public class Stage3 : MonoBehaviour
     // Countdown function
     private void CountDown()
     {
-        // Debug.Log("TimeScale: " + Time.timeScale.ToString());
+        // Check if all customers have customer.Active = false
+        var customers = Global.CustomersData;
+        bool customersComplete = customers.All(customer => !customer.Active);
 
+        // If the timer reaches 0
         if (Time.timeScale == 0f)
         {
             return;
@@ -162,10 +175,11 @@ public class Stage3 : MonoBehaviour
 
         currentTime -= Time.deltaTime;
 
-        if (currentTime <= 0)
+        if (currentTime <= 0 || customersComplete)
         {
             currentTime = 0;
             Time.timeScale = 0f;
+            stageFinish = true;
         }
 
         countdownText.text = Mathf.FloorToInt(currentTime).ToString() + " Days Left";
@@ -180,12 +194,22 @@ public class Stage3 : MonoBehaviour
         loansRemain = customers.Count(customer => !customer.Paid);
         loansClosed = customers.Count(customer => customer.Paid);
 
-
         // Text update
         loansRemainText.text = "Loans Remaining: " + loansRemain.ToString();
         loansClosedText.text = "Loans Closed: " + loansClosed.ToString();
         loansDroppedText.text = "Loans Dropped: " + loansDropped.ToString();
         demandLettersText.text = "Demand Letters Used: " + demandLetters.ToString();
+    }
+
+    // Close the stage
+    private void CompleteStage()
+    {
+        Debug.Log("Stage Complete!");
+
+        // Activate/deactivate buttons
+        pauseButton.interactable = false;
+        speedButton.interactable = false;
+        continueButton.gameObject.SetActive(true);
     }
 
     // Speed Up Function
@@ -214,5 +238,63 @@ public class Stage3 : MonoBehaviour
         Time.timeScale = 1f;
         pauseButton.onClick.AddListener(PauseTime);
         pauseButtonText.text = "II";
+    }
+
+    // Deactivate all buttons
+    public void DeactivateButtons()
+    {
+        // Find all buttons in the Canvas
+        Button[] buttons = dashboardCanvas.GetComponentsInChildren<Button>();
+
+        // Find all ScrollRects in the Canvas
+        ScrollRect[] scrollRects = dashboardCanvas.GetComponentsInChildren<ScrollRect>();
+
+        // Deactivate each button
+        foreach (Button button in buttons)
+        {
+            button.interactable = false;
+        }
+
+        // Deactivate each ScrollRect
+        foreach (ScrollRect scrollRect in scrollRects)
+        {
+            // Disable scrolling
+            scrollRect.vertical = false;
+        }
+    }
+
+    // Reactivate all buttons
+    public void ReactivateButtons()
+    {
+        // Find all buttons in the Canvas
+        Button[] buttons = dashboardCanvas.GetComponentsInChildren<Button>();
+
+        // Find all ScrollRects in the Canvas
+        ScrollRect[] scrollRects = dashboardCanvas.GetComponentsInChildren<ScrollRect>();
+
+        // Activate each button
+        foreach (Button button in buttons)
+        {
+            button.interactable = true;
+        }
+
+        // Activate each ScrollRect
+        foreach (ScrollRect scrollRect in scrollRects)
+        {
+            // Enable scrolling
+            scrollRect.vertical = true;
+        }
+    }
+
+    // Adjust Dropped loans
+    public void DropCount(int number)
+    {
+        loansDropped += number;
+    }
+
+    // Adjust number of demand letters sent
+    public void LetterCount(int number)
+    {
+        demandLetters += number;
     }
 }

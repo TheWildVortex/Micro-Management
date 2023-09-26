@@ -80,6 +80,7 @@ public class CustomerPrefab : MonoBehaviour
     private void Awake()
     {
         sortNumber = GetComponent<Canvas>().sortingOrder;
+        Debug.Log("Customer Sort Number: " + sortNumber.ToString());
         eyes = transform.Find("eyes").GetComponent<SpriteRenderer>();
         nose = transform.Find("nose").GetComponent<SpriteRenderer>();
         mouth = transform.Find("mouth").GetComponent<SpriteRenderer>();
@@ -94,8 +95,8 @@ public class CustomerPrefab : MonoBehaviour
     // Maintain correct sorting order
     private void Update()
     {
-        eyes.sortingOrder = nose.sortingOrder = mouth.sortingOrder = brows.sortingOrder = bangs.sortingOrder = hair.sortingOrder = clothes.sortingOrder = sortNumber + 1;
-        body.sortingOrder = extension.sortingOrder = sortNumber;
+        eyes.sortingOrder = nose.sortingOrder = mouth.sortingOrder = brows.sortingOrder = bangs.sortingOrder = hair.sortingOrder = clothes.sortingOrder = sortNumber + 2;
+        body.sortingOrder = extension.sortingOrder = sortNumber + 1;
     }
 
     // Generate Sprite based on customer information

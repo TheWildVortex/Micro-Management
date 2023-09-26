@@ -53,8 +53,8 @@ public class SceneLoader : MonoBehaviour
         int number = 10;
         int minLoan = 5000;
         int maxLoan = 30000;
-        float chanceForReal = 1f;
-        float chanceForValid = 1f;
+        float chanceForReal = 6f;
+        float chanceForValid = 6f;
 
         // Generate new player and customers
         var player = Global.NewPlayer(mfi, budget);
@@ -112,6 +112,12 @@ public class SceneLoader : MonoBehaviour
 
     // Stage2 -> Stage3 Function
     public void Stage2_3()
+    {
+        OverwriteGlobalData();
+    }
+
+    // Stage3 -> Stage4 Function
+    public void Stage3_4()
     {
         OverwriteGlobalData();
     }

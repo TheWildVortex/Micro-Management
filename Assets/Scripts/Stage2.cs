@@ -10,15 +10,15 @@ public class Stage2 : MonoBehaviour
     private bool buttonClicked = false;
     private bool customersComplete = false;
     private Global.Customer currentCustomer;
-    private int currentBudget;
-    private int totalLoanAmount;
+    private float currentBudget;
+    private float totalLoanAmount;
     private int totalLoanCount;
     public TMP_Text currentBudgetText;
     public TMP_Text totalLoanAmountText;
     public TMP_Text totalLoanCountText;
-    public Button ApproveButton;
-    public Button RejectButton;
-    public Button ContinueButton;
+    public Button approveButton;
+    public Button rejectButton;
+    public Button continueButton;
 
     // Declare Prefabs and Canvas
     public GameObject dialogPrefab;
@@ -69,21 +69,21 @@ public class Stage2 : MonoBehaviour
         totalLoanCount = customers.Count;
 
         // Add event listeners to the buttons
-        ApproveButton.onClick.AddListener(() =>
+        approveButton.onClick.AddListener(() =>
         {
             OnApproved();
         });
-        RejectButton.onClick.AddListener(() =>
+        rejectButton.onClick.AddListener(() =>
         {
             OnRejected();
         });
 
         // Process customers
-        StartCoroutine(ProcessCustomers(customers));
+        StartCoroutine(ProcessCustomers(player, customers));
     }
 
     // Process all customers
-    IEnumerator ProcessCustomers(List<Global.Customer> customers)
+    IEnumerator ProcessCustomers(Global.Player player, List<Global.Customer> customers)
     {
         foreach (Global.Customer customer in customers)
         {
@@ -253,10 +253,21 @@ public class Stage2 : MonoBehaviour
             // Adjust amounts accordingly
             if (customer.Approved)
             {
+                // Adjust necessary variables
                 totalLoanAmount += customer.LoanAmount;
                 currentBudget -= customer.LoanAmount;
+
+                customer.AmountEarned = ApplyMultipliers(customer);
             }
             totalLoanCount -= 1;
+
+            player.Budget = currentBudget;
+
+            // Clear Global data
+            Global.ResetGlobalData();
+            // Store current data in Global
+            Global.PlayerData = player;
+            Global.CustomersData = customers;
 
             // Destroy all physical traces of previous customer
             Destroy(newCustomer);
@@ -320,9 +331,38 @@ public class Stage2 : MonoBehaviour
         // Edit buttons if all customers have been processed
         if (customersComplete)
         {
-            ContinueButton.gameObject.SetActive(true);
-            ApproveButton.gameObject.SetActive(false);
-            RejectButton.gameObject.SetActive(false);
+            continueButton.gameObject.SetActive(true);
+            approveButton.gameObject.SetActive(false);
+            rejectButton.gameObject.SetActive(false);
         }
+    }
+
+    private float ApplyMultipliers(Global.Customer customer)
+    {
+        // Adjust amount earned based on Real status
+        if (customer.Real)
+        {
+            customer.AmountEarned += customer.LoanAmount * (Global.amountEarnedMultiplier / 2);
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+        else
+        {
+            customer.AmountEarned -= customer.LoanAmount * Global.amountEarnedMultiplier;
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+
+        // Adjust amount earned based on Valid status
+        if (customer.Valid)
+        {
+            customer.AmountEarned += customer.LoanAmount * (Global.amountEarnedMultiplier / 2);
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+        else
+        {
+            customer.AmountEarned -= customer.LoanAmount * Global.amountEarnedMultiplier;
+            Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
+        }
+
+        return customer.AmountEarned;
     }
 }

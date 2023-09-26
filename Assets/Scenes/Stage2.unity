@@ -1006,9 +1006,9 @@ MonoBehaviour:
   currentBudgetText: {fileID: 1841528917}
   totalLoanAmountText: {fileID: 1705202702}
   totalLoanCountText: {fileID: 1117631623}
-  ApproveButton: {fileID: 610289378}
-  RejectButton: {fileID: 1507604030}
-  ContinueButton: {fileID: 121566242}
+  approveButton: {fileID: 610289378}
+  rejectButton: {fileID: 1507604030}
+  continueButton: {fileID: 121566242}
   dialogPrefab: {fileID: 7433065533069601705, guid: 6f8e7851caa783d4f84be60dbd6b7195, type: 3}
   customerPrefab: {fileID: 4389674572197340537, guid: cc2310b6b775226409dff98113054d2a, type: 3}
   loanAppPrefab: {fileID: 5491684683028205520, guid: 97ca0621a632a6f4ab1cb0fcdc5f7eaf, type: 3}
