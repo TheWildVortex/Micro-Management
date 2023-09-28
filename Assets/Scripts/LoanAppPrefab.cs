@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class LoanAppPrefab : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class LoanAppPrefab : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler//, IPointerDownHandler
 {
     // Private variables
     private Canvas parentCanvas;
@@ -146,7 +146,7 @@ public class LoanAppPrefab : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
         }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+   /* public void OnPointerDown(PointerEventData eventData)
     {
         if (!canDrag)
         {
@@ -164,7 +164,7 @@ public class LoanAppPrefab : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
             rectTransform.localScale = new Vector2(5.12f, 5.12f); 
             enlarged = false;
         }
-    }
+    }*/
 
     private float ApplyMultipliers(Global.Customer customer)
     {

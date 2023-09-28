@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class PassportPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
+public class PassportPrefab : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler//, IPointerDownHandler
 {
     // Private variables
     private Canvas parentCanvas;
@@ -146,7 +146,7 @@ public class PassportPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         rectTransform.localScale = new Vector2(4f, 12f);
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+   /* public void OnPointerDown(PointerEventData eventData)
     {
         if (!canDrag)
         {
@@ -164,5 +164,5 @@ public class PassportPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             rectTransform.localScale = new Vector2(4f, 12f);
             enlarged = false;
         }
-    }
+    }*/
 }

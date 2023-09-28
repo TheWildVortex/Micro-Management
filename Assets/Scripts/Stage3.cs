@@ -74,6 +74,7 @@ public class Stage3 : MonoBehaviour
 
         // Set status values
         currentBudget = player.Budget;
+        stageFinish = false;
 
         // Set timer
         currentTime = countdownTime;

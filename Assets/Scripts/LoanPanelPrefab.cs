@@ -35,6 +35,9 @@ public class LoanPanelPrefab : MonoBehaviour
     {
         // Add listener for loan details button
         loanDetailsButton.onClick.AddListener(OpenDetails);
+
+        // Ensure that the variable is set
+        stageEnd = false;
     }
 
     // Update is called once per frame
@@ -70,29 +73,43 @@ public class LoanPanelPrefab : MonoBehaviour
         // Probability elements
         targetAmount = customer.LoanAmount;
         currentAmount = 0;
-        paymentRate = customer.Rate;
+        paymentRate = customer.Rate * customer.LoanAmount;
         paymentFrequency = customer.Frequency;
         paymentStopChance = customer.StopChance;
 
         // Adjust progress bar
         progressBar.value = currentAmount;
         progressBar.maxValue = targetAmount;
+
+        // Initial StopChance check
+        CheckStopChance(customer);
+
+        Debug.Log("Amount Earned: " + customer.AmountEarned.ToString("n2"));
     }
 
     // Bar fills according to the customer's probabilities
     private void FillBar()
     {
-        // Check if Loan is still active
-        if (loanCustomer.Dropped || loanCustomer.Active && Stage3.stageFinish)
-        {
-            // Red highlight means incomplete
-            loanCustomer.Active = false;
-            loanAmountNumber.faceColor = new Color32(250, 0, 0, 255);
+        // Declare current time
+        var time = Stage3.currentTime;
 
+        if (time == 75 || time == 50 || time == 25)
+        {
+            // StopChance check
+            CheckStopChance(loanCustomer);
+        }
+
+        // Check if Loan is still active
+        if (loanCustomer.Dropped || (Stage3.stageFinish && !loanCustomer.Paid))
+        {
             // Adjust amount earned
+            loanCustomer.AmountEarned = currentAmount;
             loanCustomer.AmountEarned = ApplyMultipliers(loanCustomer);
             Debug.Log("Amount Earned: " + loanCustomer.AmountEarned.ToString("n2"));
 
+            // Red highlight means incomplete
+            loanCustomer.Active = false;
+            loanAmountNumber.faceColor = new Color32(250, 0, 0, 255);
             return;
         }
 
@@ -100,8 +117,10 @@ public class LoanPanelPrefab : MonoBehaviour
         loanAmountNumber.text = "₱" + currentAmount.ToString("n2") + " / ₱" + targetAmount.ToString("n2");
 
         // Declare variables
-        var fillSpeed = loanCustomer.LoanAmount * paymentRate;
+        var fillSpeed = paymentRate;
         var slider = progressBar;
+
+        Debug.Log("Pay Rate: " + paymentRate.ToString());
 
         if (currentAmount != targetAmount)
         {
@@ -110,27 +129,25 @@ public class LoanPanelPrefab : MonoBehaviour
                 currentAmount += fillSpeed * Time.deltaTime;
                 if (currentAmount > targetAmount) currentAmount = targetAmount;
             }
-            else
+            else if (currentAmount > targetAmount)
             {
                 currentAmount -= fillSpeed * Time.deltaTime;
                 if (currentAmount < targetAmount) currentAmount = targetAmount;
             }
             slider.value = currentAmount;
         }
-
-        else
+        else if (currentAmount == targetAmount)
         {
-            // Update status
-            loanCustomer.Paid = true;
-            loanCustomer.Active = false;
-            loanCustomer.AmountEarned = ApplyMultipliers(loanCustomer);
-            Debug.Log("Amount Earned: " + loanCustomer.AmountEarned.ToString("n2"));
+            if (!loanCustomer.Paid) // Check if not already paid
+            {
+                // Update status
+                loanCustomer.Paid = true;
+                loanCustomer.Active = false;
+                loanAmountNumber.faceColor = new Color32(0, 250, 0, 255);
 
-            // Green highlight upon completion
-            loanAmountNumber.faceColor = new Color32(0, 250, 0, 255);
-
-            // Ensure that the slider is uninteractable after completing
-            slider.value = slider.maxValue;
+                // Ensure that the slider is uninteractable after completing
+                slider.value = slider.maxValue;
+            }
         }
     }
 
@@ -144,24 +161,31 @@ public class LoanPanelPrefab : MonoBehaviour
         detailsScript.SetCustomer(loanCustomer);
     }
 
+    private void CheckStopChance(Global.Customer customer)
+    {
+        if (UnityEngine.Random.value < customer.StopChance)
+        {
+            customer.Frequency = 0f;
+            Debug.Log("WHERE'D THEY GO????");
+        }
+    }
+
     private float ApplyMultipliers(Global.Customer customer)
     {
         Debug.Log("Original Amount Earned: " + customer.AmountEarned.ToString("n2"));
-        customer.AmountEarned = (customer.AmountEarned - customer.LoanAmount) + currentAmount;
-        Debug.Log("Applied CurrentAmount: " + currentAmount.ToString("n2"));
-        Debug.Log("Applied Loan Amount: " + customer.LoanAmount.ToString("n2"));
-        Debug.Log("Applied Amount Earned: " + customer.AmountEarned.ToString("n2"));
 
+        // Check if demanded and apply multiplier
         if (customer.Demanded)
         {
             customer.AmountEarned -= customer.LoanAmount * Global.demandLetterMultiplier;
-            Debug.Log("Letter Amount Earned: " + customer.AmountEarned.ToString("n2"));
+            Debug.Log("Applied Demanded Amount: " + customer.AmountEarned.ToString("n2"));
         }
 
+        // Check if dropped and apply multiplier
         if (customer.Dropped)
         {
             customer.AmountEarned += customer.LoanAmount * Global.droppedMultiplier;
-            Debug.Log("Dropped Amount Earned: " + customer.AmountEarned.ToString("n2"));
+            Debug.Log("Applied Dropped Amount: " + customer.AmountEarned.ToString("n2"));
         }
 
         return customer.AmountEarned;

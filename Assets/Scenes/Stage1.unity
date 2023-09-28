@@ -737,9 +737,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingLayerID: -790127757
+  m_SortingLayer: 4
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1863104625cea6745a7ed2ee24a644ac, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -763,6 +763,7 @@ GameObject:
   - component: {fileID: 1013711517}
   - component: {fileID: 1013711516}
   - component: {fileID: 1013711519}
+  - component: {fileID: 1013711520}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -853,7 +854,21 @@ MonoBehaviour:
   totalLoanAmountText: {fileID: 4409304}
   totalLoanCountText: {fileID: 543255186}
   loanAppPrefab: {fileID: 5491684683028205520, guid: 97ca0621a632a6f4ab1cb0fcdc5f7eaf, type: 3}
+  bannerPrefab: {fileID: 7433065533069601705, guid: fe769ac2ebea852479cce166c416e176, type: 3}
   canvas: {fileID: 2022731773}
+--- !u!114 &1013711520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013711515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686499d6a2ea8af4a9df98e7db31e3ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetResolution: {x: 1920, y: 1080}
 --- !u!1 &1103258535
 GameObject:
   m_ObjectHideFlags: 0
@@ -1382,9 +1397,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -2
+  m_SortingLayerID: 2080713819
+  m_SortingLayer: 3
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b706fdff9c4fba643a0511ee55a4e4cb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1873,13 +1888,13 @@ Canvas:
   m_RenderMode: 1
   m_Camera: {fileID: 1013711517}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: -790127757
+  m_SortingLayerID: 2080713819
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &2022731774

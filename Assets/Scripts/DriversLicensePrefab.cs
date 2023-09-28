@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class DriversLicensePrefab : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class DriversLicensePrefab : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler//, IPointerDownHandler
 {
     // Private variables
     private Canvas parentCanvas;
@@ -148,7 +148,7 @@ public class DriversLicensePrefab : MonoBehaviour, IPointerDownHandler, IBeginDr
         rectTransform.localScale = new Vector2(5.12f, 5.12f);
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    /*public void OnPointerDown(PointerEventData eventData)
     {
         if (!canDrag)
         {
@@ -166,5 +166,5 @@ public class DriversLicensePrefab : MonoBehaviour, IPointerDownHandler, IBeginDr
             rectTransform.localScale = new Vector2(5.12f, 5.12f); 
             enlarged = false;
         }
-    }
+    }*/
 }

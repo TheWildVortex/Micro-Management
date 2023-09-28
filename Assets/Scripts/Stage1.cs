@@ -14,8 +14,9 @@ public class Stage1 : MonoBehaviour
     public TMP_Text totalLoanAmountText;
     public TMP_Text totalLoanCountText;
 
-    // Declare Prefab and Canvas
+    // Declare Prefabs and Canvas
     public GameObject loanAppPrefab;
+    public GameObject bannerPrefab;
     public Canvas canvas;
 
     // Start is called before the first frame update
@@ -74,6 +75,14 @@ public class Stage1 : MonoBehaviour
             LoanAppPrefab loanAppScript = newLoanApp.GetComponent<LoanAppPrefab>();
             loanAppScript.SetContent(customer, canvas);
         }
+
+        // Generate level banner and script
+        var banner = Instantiate(bannerPrefab);
+        var bannerScript = banner.GetComponent<BannerPrefab>();
+
+        // Set banner text
+        bannerScript.SetText("Level " + player.TotalLevelsCompleted.ToString());
+        bannerScript.CloseBanner(2f);
     }
 
     // Update is called once per frame

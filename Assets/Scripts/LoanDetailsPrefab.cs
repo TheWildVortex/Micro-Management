@@ -125,8 +125,19 @@ public class LoanDetailsPrefab : MonoBehaviour
     // Send a demand letter
     private void SendLetter()
     {
+        Debug.Log("Rate: " + loanCustomer.Rate);
+        Debug.Log("Frequency: " + loanCustomer.Frequency);
+        Debug.Log("StopChance: " + loanCustomer.StopChance);
+
         // Edit customer variables
         loanCustomer.Demanded = true;
+        if (UnityEngine.Random.value < loanCustomer.ValidChance) { loanCustomer.Rate *= 2; }
+        if (UnityEngine.Random.value < loanCustomer.ValidChance) { loanCustomer.Frequency *= 2; }
+        if (UnityEngine.Random.value < loanCustomer.RealChance) { loanCustomer.StopChance *= 2; }
+
+        Debug.Log("New Rate: " + loanCustomer.Rate);
+        Debug.Log("New Frequency: " + loanCustomer.Frequency);
+        Debug.Log("New StopChance: " + loanCustomer.StopChance);
 
         // Add to count
         stage3.LetterCount(1);

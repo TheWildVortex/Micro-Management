@@ -8,6 +8,7 @@ using System.Linq;
 public class Stage4 : MonoBehaviour
 {
     // Stage 4 Variables
+    private bool failed = false;
     private float currentBudget;
     private float totalAmountSpent;
     private float totalAmountEarned;
@@ -15,6 +16,8 @@ public class Stage4 : MonoBehaviour
     private int totalDemandLetters;
     private int totalLoansDropped;
 
+    public TMP_Text levelCompleteText;
+    public TMP_Text mfiNameText;
     public TMP_Text currentBudgetText;
     public TMP_Text totalAmountSpentText;
     public TMP_Text totalAmountEarnedText;
@@ -23,6 +26,7 @@ public class Stage4 : MonoBehaviour
     public TMP_Text totalLoansDroppedText;
 
     public Button continueButton;
+    public TMP_Text continueButtonText;
     public Button quitButton;
 
     // Start is called before the first frame update
@@ -51,6 +55,9 @@ public class Stage4 : MonoBehaviour
 
         // -------------------------------------------------STAGE 4 TESTING----------------------------------------
 
+        // Ensure that the game is unpaused
+        Global.UnpauseGame(true);
+
         // Retrieve Global player and customers data
         var player = Global.PlayerData;
         var customers = Global.CustomersData;
@@ -64,7 +71,11 @@ public class Stage4 : MonoBehaviour
         foreach (Global.Customer customer in customers)
         {
             Debug.Log("Customer Dropped: " + customer.Dropped);
+            Debug.Log("Customer Amount Earned: " + customer.AmountEarned.ToString("n2"));
         }
+
+        // Set fail status
+        if (player.Budget < player.MinLoan || customers.Count == 0) { failed = true; };
 
         // Set status values
         totalAmountSpent = customers.Where(customer => customer.Approved).Sum(customer => customer.LoanAmount);
@@ -75,11 +86,41 @@ public class Stage4 : MonoBehaviour
         currentBudget = player.Budget + totalAmountEarned;
 
         // Set text
+        var amountDifference = totalAmountEarned - totalAmountSpent;
+        if (!failed) { levelCompleteText.text = "Level " + player.TotalLevelsCompleted.ToString() + " Complete"; }
+        else { levelCompleteText.text = "Level Failed"; }
+        mfiNameText.text = player.MfiName;
         currentBudgetText.text = "₱" + currentBudget.ToString("n2");
         totalAmountSpentText.text = "₱" + totalAmountSpent.ToString("n2");
-        totalAmountEarnedText.text = "₱" + totalAmountEarned.ToString("n2");
+        totalAmountEarnedText.text = "₱" + amountDifference.ToString("n2");
         totalLoansCompletedText.text = totalLoansCompleted.ToString();
         totalDemandLettersText.text = totalDemandLetters.ToString();
         totalLoansDroppedText.text = totalLoansDropped.ToString();
+
+        // Set player values
+        if (!failed)
+        {
+            player.Budget += totalAmountEarned;
+            player.TotalLoansCompleted += totalLoansCompleted;
+            player.TotalAmountEarned += amountDifference;
+            player.TotalLevelsCompleted += 1;
+        }
+        else
+        {
+            player.Budget += totalAmountSpent;
+        }
+
+        // Set continue button
+        SceneLoader continueButtonScript = continueButton.GetComponent<SceneLoader>();
+        if (!failed)
+        {
+            continueButtonText.text = "Continue";
+            continueButton.onClick.AddListener(() => continueButtonScript.ContinueGame(player, failed));
+        }
+        else
+        {
+            continueButtonText.text = "Retry";
+            continueButton.onClick.AddListener(() => continueButtonScript.ContinueGame(player, failed));
+        }
     }
 }

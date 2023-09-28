@@ -10,20 +10,27 @@ public class Global : MonoBehaviour
     private static bool isGamePaused = false;
 
     // GLOBAL MULTIPLIERS
-    public static float amountEarnedMultiplier = 0.1f;
-    public static float demandLetterMultiplier = 0.3f;
+    public static float amountEarnedMultiplier = 0.16f;
+    public static float demandLetterMultiplier = 0.03f;
     public static float droppedMultiplier = 0.5f;
 
     // GLOBAL BASE PROBABILITIES
-    public static float minPaymentRate = 0.01f;
+    public static int baseCustomerNumber = 10;
+    public static float baseBudget = 50000f;
+    public static float baseMinLoan = 5000f;
+    public static float baseMaxLoan = baseBudget * 0.9f;
+    public static float baseRealChance = 1f;
+    public static float baseValidChance = 1f;
+
+    public static float minPaymentRate = 0.0005f;
     public static float minFrequency = 0.01f;
     public static float minStopChance = 0f;
 
-    public static float basePaymentRate = 0.1f;
+    public static float basePaymentRate = 0.005f;
     public static float baseFrequency = 0.5f;
     public static float baseStopChance = 0.05f;
 
-    public static float maxPaymentRate = 0.2f;
+    public static float maxPaymentRate = 0.05f;
     public static float maxFrequency = 1.0f;
     public static float maxStopChance = 1.0f;
 
@@ -318,6 +325,13 @@ public class Global : MonoBehaviour
         public string MfiName { get; set; }
         public float Budget { get; set; }
 
+        // Difficulty Information
+        public int NumberOfCustomers { get; set; }
+        public float MinLoan { get; set; }
+        public float MaxLoan { get; set; }
+        public float RealChance { get; set; }
+        public float ValidChance { get; set; }
+
         // Gameplay Statistics
         public int TotalLoansCompleted { get; set; }
         public int TotalLevelsCompleted { get; set; }
@@ -366,6 +380,8 @@ public class Global : MonoBehaviour
         // Probabilities
         public bool Real { get; set; }
         public bool Valid { get; set; }
+        public float RealChance { get; set; }
+        public float ValidChance { get; set; }
         public float Rate { get; set; }
         public float Frequency { get; set; }
         public float StopChance { get; set; }
@@ -443,24 +459,31 @@ public class Global : MonoBehaviour
 
     // GLOBAL FUNCTIONS:
     // New Player Generation Function
-    public static Player NewPlayer(string mfi, int budget)
+    public static Player NewPlayer(string mfi)
     {
         Player player = new Player();
 
         // Input basic player information
         player.MfiName = mfi;
-        player.Budget = budget;
+        player.Budget = baseBudget;
 
-        // Ensure that all gameplay statistics are set to 0
+        // Input base difficulty information
+        player.NumberOfCustomers = baseCustomerNumber;
+        player.MinLoan = baseMinLoan;
+        player.MaxLoan = baseMaxLoan;
+        player.RealChance = baseRealChance;
+        player.ValidChance = baseValidChance;
+
+        // Ensure that all gameplay statistics are set to 0 except levels since it is used to indicate the first level is 1
         player.TotalLoansCompleted = 0;
         player.TotalAmountEarned = 0;
-        player.TotalLevelsCompleted = 0;
+        player.TotalLevelsCompleted = 1;
 
         return player;
     }
 
     // New Customers Generation Function
-    public static List<Customer> GenerateCustomers(int number, int minLoan, int maxLoan, float chanceForReal, float chanceForValid)
+    public static List<Customer> GenerateCustomers(int number, float minLoan, float maxLoan, float chanceForReal, float chanceForValid)
     {
         List<Customer> customers = new List<Customer>();
 
@@ -470,6 +493,10 @@ public class Global : MonoBehaviour
         for (int i = 0; i < number; i++)
         {
             Customer customer = new Customer();
+
+            // Save difficulty rates
+            customer.RealChance = chanceForReal;
+            customer.ValidChance = chanceForValid;  
 
             // Generate Personal Details
             customer.FirstName = firstNames[UnityEngine.Random.Range(0, firstNames.Length)];

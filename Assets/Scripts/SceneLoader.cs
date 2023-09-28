@@ -41,23 +41,73 @@ public class SceneLoader : MonoBehaviour
     // General Scene Loader Function
     public void LoadScene()
     {
+        // Clear Global data
+        Global.ResetGlobalData();
         SceneManager.LoadScene(sceneName);
     }
 
     // Start Game Function
     public void StartGame()
     {
-        // Set variables:
-        string mfi = "Name";
-        int budget = 50000;
-        int number = 10;
-        int minLoan = 5000;
-        int maxLoan = 30000;
-        float chanceForReal = 6f;
-        float chanceForValid = 6f;
+        // Collect player input for Name
+        string mfi = "Rojumicro Lending Corporation";
 
-        // Generate new player and customers
-        var player = Global.NewPlayer(mfi, budget);
+        // Generate New Player
+        var player = Global.NewPlayer(mfi);
+
+        // Set variables:
+        int number = player.NumberOfCustomers;
+        float minLoan = player.MinLoan;
+        float maxLoan = player.MaxLoan;
+        float chanceForReal = player.RealChance;
+        float chanceForValid = player.ValidChance;
+
+        // Generate New Customers
+        var customers = Global.GenerateCustomers(number, minLoan, maxLoan, chanceForReal, chanceForValid);
+
+        // Clear Global data
+        Global.ResetGlobalData();
+        // Store data in Global
+        Global.PlayerData = player;
+        Global.CustomersData = customers;
+
+        // Load Stage1
+        SceneManager.LoadScene(sceneName);
+    }
+
+    // Continue Game Function
+    public void ContinueGame(Global.Player player, bool failed)
+    {
+        // Declare variables
+        int number;
+        float minLoan;
+        float maxLoan;
+        float chanceForReal;
+        float chanceForValid;
+
+        // If the player failed the level
+        if (failed) 
+        {
+            // Set same variables as current level:
+            number = player.NumberOfCustomers;
+            minLoan = player.MinLoan;
+            maxLoan = player.MaxLoan;
+            chanceForReal = player.RealChance;
+            chanceForValid = player.ValidChance;
+        }
+
+        // If the player completed the level
+        else
+        {
+            // Set variables for next level:
+            number = player.NumberOfCustomers + (Global.baseCustomerNumber / 2);
+            minLoan = player.MinLoan *= 2;
+            maxLoan = player.MaxLoan = player.Budget;
+            chanceForReal = player.RealChance - 0.1f;
+            chanceForValid = player.ValidChance - 0.1f;
+        }
+
+        // Generate New Customers
         var customers = Global.GenerateCustomers(number, minLoan, maxLoan, chanceForReal, chanceForValid);
 
         // Clear Global data

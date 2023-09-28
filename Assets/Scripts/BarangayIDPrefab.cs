@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class BarangayIDPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
+public class BarangayIDPrefab : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler//, IPointerDownHandler
 {
     // Private variables
     private Canvas parentCanvas;
@@ -140,7 +140,7 @@ public class BarangayIDPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         rectTransform.localScale = new Vector2(5.12f, 5.12f);
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    /*public void OnPointerDown(PointerEventData eventData)
     {
         if (!canDrag)
         {
@@ -158,5 +158,5 @@ public class BarangayIDPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             rectTransform.localScale = new Vector2(5.12f, 5.12f);
             enlarged = false;
         }
-    }
+    }*/
 }
