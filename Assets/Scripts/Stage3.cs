@@ -29,6 +29,7 @@ public class Stage3 : MonoBehaviour
     // SCROLLVIEW ELEMENTS
     public Canvas dashboardCanvas;
     public GameObject loanPanelPrefab;
+    public GameObject bannerPrefab;
     public Transform contentContainer;
 
     // FOOTER ELEMENTS
@@ -82,6 +83,14 @@ public class Stage3 : MonoBehaviour
         // Set button
         pauseButton.onClick.AddListener(PauseTime);
         pauseButtonText.text = "II";
+
+        // Generate level banner and script
+        var banner = Instantiate(bannerPrefab);
+        var bannerScript = banner.GetComponent<BannerPrefab>();
+
+        // Set banner text
+        bannerScript.SetText("Level " + player.TotalLevelsCompleted.ToString(), "Transaction Monitoring");
+        bannerScript.CloseBanner(2f);
 
         // Process customers
         ProcessCustomers(customers);

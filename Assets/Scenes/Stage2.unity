@@ -918,7 +918,6 @@ GameObject:
   - component: {fileID: 1013711517}
   - component: {fileID: 1013711516}
   - component: {fileID: 1013711519}
-  - component: {fileID: 1013711520}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1019,21 +1018,9 @@ MonoBehaviour:
   barangayIDPrefab: {fileID: 5491684683028205520, guid: cd76736fdde33e44f988909edead4b74, type: 3}
   passportPrefab: {fileID: 5491684683028205520, guid: dd7c553ee37feba4a81886ddd8039f35, type: 3}
   schoolIDPrefab: {fileID: 5491684683028205520, guid: edd1ca45e4fe5164fa34b4c4f19d7b98, type: 3}
+  bannerPrefab: {fileID: 7433065533069601705, guid: fe769ac2ebea852479cce166c416e176, type: 3}
   deskCanvas: {fileID: 822885631}
   backgroundCanvas: {fileID: 1884038828}
---- !u!114 &1013711520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013711515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686499d6a2ea8af4a9df98e7db31e3ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetResolution: {x: 1920, y: 1080}
 --- !u!1 &1112878336
 GameObject:
   m_ObjectHideFlags: 0

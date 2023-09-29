@@ -81,7 +81,7 @@ public class Stage1 : MonoBehaviour
         var bannerScript = banner.GetComponent<BannerPrefab>();
 
         // Set banner text
-        bannerScript.SetText("Level " + player.TotalLevelsCompleted.ToString());
+        bannerScript.SetText("Level " + player.TotalLevelsCompleted.ToString(), "Application Filtering");
         bannerScript.CloseBanner(2f);
     }
 

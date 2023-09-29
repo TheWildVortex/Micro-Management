@@ -1501,7 +1501,6 @@ GameObject:
   - component: {fileID: 1013711517}
   - component: {fileID: 1013711519}
   - component: {fileID: 1013711516}
-  - component: {fileID: 1013711520}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1598,19 +1597,7 @@ MonoBehaviour:
   continueButton: {fileID: 694167455}
   continueButtonText: {fileID: 1136824691}
   quitButton: {fileID: 1526918407}
---- !u!114 &1013711520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013711515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686499d6a2ea8af4a9df98e7db31e3ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetResolution: {x: 1920, y: 1080}
+  bannerPrefab: {fileID: 7433065533069601705, guid: fe769ac2ebea852479cce166c416e176, type: 3}
 --- !u!1 &1136824689
 GameObject:
   m_ObjectHideFlags: 0

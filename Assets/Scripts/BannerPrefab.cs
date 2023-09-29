@@ -8,11 +8,13 @@ using TMPro;
 public class BannerPrefab : MonoBehaviour
 {
     // Confirmation Dialog Objects
-    public TMP_Text bannerText;
+    public TMP_Text bannerMainText;
+    public TMP_Text bannerSubText;
 
-    public void SetText(string newText)
+    public void SetText(string newMainText, string newSubText)
     {
-        bannerText.text = newText;
+        bannerMainText.text = newMainText;
+        bannerSubText.text = newSubText;
     }
 
     public void CloseBanner(float delay)

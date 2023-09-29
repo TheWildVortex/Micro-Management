@@ -20,7 +20,7 @@ public class LoanAppPrefab : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     public TMP_Text loanAppName;
     public TMP_Text loanAppBusiness;
     public TMP_Text loanAppAmount;
-    public TMP_Text loanAppID;
+    public TMP_Text loanAppReason;
     public Canvas textCanvas;
     public LayerMask panelLayerMask;
 
@@ -54,7 +54,7 @@ public class LoanAppPrefab : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         loanAppName.text = customer.FirstName + " " + customer.LastName;
         loanAppBusiness.text = customer.Business;
         loanAppAmount.text = customer.LoanAmount.ToString("n2");
-        loanAppID.text = customer.IDUsed.IDType;
+        loanAppReason.text = customer.LoanReason;
         parentCanvas = canvas;
         canvasGroup = canvas.GetComponent<CanvasGroup>();
 

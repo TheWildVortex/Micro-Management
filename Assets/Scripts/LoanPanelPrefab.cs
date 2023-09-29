@@ -90,10 +90,15 @@ public class LoanPanelPrefab : MonoBehaviour
     // Bar fills according to the customer's probabilities
     private void FillBar()
     {
+        // Ensure variables are updated
+        paymentRate = loanCustomer.Rate * loanCustomer.LoanAmount;
+        paymentFrequency = loanCustomer.Frequency;
+        paymentStopChance = loanCustomer.StopChance;
+
         // Declare current time
         var time = Stage3.currentTime;
 
-        if (time == 75 || time == 50 || time == 25)
+        if (time / 25 == 0)
         {
             // StopChance check
             CheckStopChance(loanCustomer);

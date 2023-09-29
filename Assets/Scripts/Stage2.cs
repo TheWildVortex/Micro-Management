@@ -30,6 +30,7 @@ public class Stage2 : MonoBehaviour
     public GameObject barangayIDPrefab;
     public GameObject passportPrefab;
     public GameObject schoolIDPrefab;
+    public GameObject bannerPrefab;
     public Canvas deskCanvas;
     public Canvas backgroundCanvas;
 
@@ -58,7 +59,6 @@ public class Stage2 : MonoBehaviour
         Global.CustomersData = customers;*/
 
         // -------------------------------------------------STAGE 2 TESTING----------------------------------------
-
         // Retrieve Global player and customers data
         var player = Global.PlayerData;
         var customers = Global.CustomersData;
@@ -78,6 +78,14 @@ public class Stage2 : MonoBehaviour
             OnRejected();
         });
 
+        // Generate level banner and script
+        var banner = Instantiate(bannerPrefab);
+        var bannerScript = banner.GetComponent<BannerPrefab>();
+
+        // Set banner text
+        bannerScript.SetText("Level " + player.TotalLevelsCompleted.ToString(), "Customer Verification");
+
+        bannerScript.CloseBanner(2f);
         // Process customers
         StartCoroutine(ProcessCustomers(player, customers));
     }

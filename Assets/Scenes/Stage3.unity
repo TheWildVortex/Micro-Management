@@ -1104,7 +1104,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100 days left
+  m_text: 0 days left
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1787,7 +1787,6 @@ GameObject:
   - component: {fileID: 1013711517}
   - component: {fileID: 1013711516}
   - component: {fileID: 1013711519}
-  - component: {fileID: 1013711520}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1881,24 +1880,12 @@ MonoBehaviour:
   demandLettersText: {fileID: 997804994}
   dashboardCanvas: {fileID: 2072519370}
   loanPanelPrefab: {fileID: 546937475514500367, guid: ff099f2be49b3b2418382e7d91d2dc51, type: 3}
+  bannerPrefab: {fileID: 7433065533069601705, guid: fe769ac2ebea852479cce166c416e176, type: 3}
   contentContainer: {fileID: 360672612}
   pauseButton: {fileID: 1816076354}
   pauseButtonText: {fileID: 611044610}
   speedButton: {fileID: 1022652117}
   continueButton: {fileID: 324039578}
---- !u!114 &1013711520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013711515}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686499d6a2ea8af4a9df98e7db31e3ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetResolution: {x: 1920, y: 1080}
 --- !u!1 &1022652114
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,6 +29,8 @@ public class Stage4 : MonoBehaviour
     public TMP_Text continueButtonText;
     public Button quitButton;
 
+    public GameObject bannerPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,7 +77,8 @@ public class Stage4 : MonoBehaviour
         }
 
         // Set fail status
-        if (player.Budget < player.MinLoan || customers.Count == 0) { failed = true; };
+        failed = false;
+        if (player.Budget < player.MinLoan) { failed = true; };
 
         // Set status values
         totalAmountSpent = customers.Where(customer => customer.Approved).Sum(customer => customer.LoanAmount);

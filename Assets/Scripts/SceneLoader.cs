@@ -72,6 +72,7 @@ public class SceneLoader : MonoBehaviour
         Global.CustomersData = customers;
 
         // Load Stage1
+        Debug.Log("MINIMUM BUDGET NEEDED: " + player.MinLoan);
         SceneManager.LoadScene(sceneName);
     }
 
@@ -117,6 +118,7 @@ public class SceneLoader : MonoBehaviour
         Global.CustomersData = customers;
 
         // Load Stage1
+        Debug.Log("MINIMUM BUDGET NEEDED: " + player.MinLoan);
         SceneManager.LoadScene(sceneName);
     }
 

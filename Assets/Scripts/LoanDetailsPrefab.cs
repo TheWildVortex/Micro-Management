@@ -52,6 +52,7 @@ public class LoanDetailsPrefab : MonoBehaviour
 
         // Keep the background paused
         stage3.PauseTime();
+        stage3.DeactivateButtons();
 
         // Update loan status
         SetStatus(loanCustomer);
@@ -145,6 +146,7 @@ public class LoanDetailsPrefab : MonoBehaviour
         // Deactivate button
         demandLetterButton.interactable = false;
         dropLoanButton.interactable = true;
+        closeButton.interactable = true;
     }
 
     // Drop the loan
@@ -162,6 +164,9 @@ public class LoanDetailsPrefab : MonoBehaviour
         // Deactivate buttons
         demandLetterButton.interactable = false;
         dropLoanButton.interactable = false;
+
+        // Exit back to Stage 3
+        CloseDialog();
     }
 
     // Close the details window
@@ -189,6 +194,7 @@ public class LoanDetailsPrefab : MonoBehaviour
 
     private void GenerateDialog(UnityEngine.Events.UnityAction function, string text)
     {
+        closeButton.interactable = false;
         demandLetterButton.interactable = false;
         dropLoanButton.interactable = false;
 
@@ -204,8 +210,9 @@ public class LoanDetailsPrefab : MonoBehaviour
     // General Return Function
     private void ReturnFunction()
     {
-        demandLetterButton.interactable = true;
-        dropLoanButton.interactable = true;
+        closeButton.interactable = true;
+        if (loanCustomer.Active && !loanCustomer.Demanded) { demandLetterButton.interactable = true; }
+        if (loanCustomer.Active && !loanCustomer.Dropped) { dropLoanButton.interactable = true; }
 
         Debug.Log("RETURN FUNCTION!");
         return;

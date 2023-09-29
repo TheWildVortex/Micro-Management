@@ -40,6 +40,8 @@ public class Global : MonoBehaviour
     private static string[] lastNames = { "Smith", "Johnson", "Williams", "Brown", "Davis", "Miller" };
 
     // Loan Details
+    private static string[] validReasons = { "Additional Capital" };
+    private static string[] invalidReasons = { "Personal Use" };
     private static string[] businesses = { "TechCorp", "FoodTruck", "Consulting", "ArtStudio" };
     private static string[] busAddresses = { "123 Main Street", "456 Park Avenue", "789 Elm Road" };
     private static string[] homeAddresses = { "111 Elm Street", "222 Maple Avenue", "333 Oak Drive" };
@@ -352,6 +354,7 @@ public class Global : MonoBehaviour
         public float AmountEarned { get; set; }
         public string Business { get; set; }
         public Identification IDUsed { get; set; }
+        public string LoanReason { get; set; }
         public string BusAddress { get; set; }
         public string HomeAddress { get; set; }
         public string ContactInfo { get; set; }
@@ -590,6 +593,9 @@ public class Global : MonoBehaviour
                 if (UnityEngine.Random.value < chanceForValid) { customer.Frequency = UnityEngine.Random.Range(baseFrequency, maxFrequency); }
                 else { customer.Frequency = UnityEngine.Random.Range(minFrequency, baseFrequency); }
 
+                // Generate valid reason
+                customer.LoanReason = validReasons[UnityEngine.Random.Range(0, validReasons.Length)];
+
                 // Keep Valid ID details
                 // Create Valid ID
                 customer.IDUsed.IDTypeNumber = idTypesValid[UnityEngine.Random.Range(0, idTypesValid.Length)];
@@ -670,6 +676,9 @@ public class Global : MonoBehaviour
 
                 if (UnityEngine.Random.value > chanceForValid) { customer.Frequency = UnityEngine.Random.Range(baseFrequency, maxFrequency); }
                 else { customer.Frequency = UnityEngine.Random.Range(minFrequency, baseFrequency); }
+
+                // Generate invalid reason
+                customer.LoanReason = invalidReasons[UnityEngine.Random.Range(0, invalidReasons.Length)];
 
                 // Edit in Common Invalid ID details based on chance
 
